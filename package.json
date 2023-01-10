@@ -1,0 +1,35 @@
+{
+  "name": "binmark",
+  "version": "1.0.0",
+  "description": "Markup language and tool for generating binary files",
+  "author": "Nicholas Humfrey",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/njh/binmark-js.git"
+  },
+  "homepage": "https://github.com/njh/binmark-js#readme",
+  "bugs": {
+    "url": "https://github.com/njh/binmark-js/issues"
+  },
+  "scripts": {
+    "test": "jest",
+    "coverage": "jest --coverage",
+    "format": "standard --fix"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "devDependencies": {
+    "jest": "^29.3.1",
+    "standard": "^17.0.0"
+  },
+  "keywords": [
+    "hex",
+    "markup",
+    "binary"
+  ],
+  "standard": {
+    "env": ["node", "jest"]
+  }
+}
