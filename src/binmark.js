@@ -14,7 +14,7 @@ function escapeToHex (chr) {
     case '"': return 0x22
     case '?': return 0x3F
     default:
-      return null
+      return undefined
   }
 }
 
@@ -58,8 +58,20 @@ function parse (input) {
       output.push(
         (parseInt(chr, 16) << 4) + parseInt(chr2, 16)
       )
+    } else if (chr === '\\') {
+      const chr2 = input[++i]
+      if (chr2 === undefined) {
+        break
+      } else {
+        const escaped = escapeToHex(chr2)
+        if (escaped === undefined) {
+          throw new Error('invalid escape sequence: ', chr2)
+        } else {
+          output.push(escaped)
+        }
+      }
     } else {
-      throw new Error("unrecognised character in input: '%c'\n", chr)
+      throw new Error('unrecognised character in input: ', chr)
     }
   }
 

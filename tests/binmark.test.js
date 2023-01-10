@@ -21,6 +21,16 @@ describe('testing parsing simple binmark markup', () => {
       expect(binmark.parse('10 # 02')).toEqual([0x10])
     })
   })
+
+  describe('escapes', () => {
+    test('parsing an null byte escape sequence', () => {
+      expect(binmark.parse('00 \\0')).toEqual([0x00, 0x00])
+    })
+
+    test('parsing a CR LF escape sequence', () => {
+      expect(binmark.parse(' \\r \\n')).toEqual([0x0d, 0x0a])
+    })
+  })
 })
 
 describe('testing parsing binmark to a hex string', () => {
