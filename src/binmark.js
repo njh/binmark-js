@@ -43,6 +43,12 @@ function parse (input) {
     if (isSpace(chr) || chr === ':' || chr === '-') {
       /* Ignore */
       continue
+    } else if (chr === '#') {
+      /* Ignore the rest of the line */
+      while (true) {
+        const chr2 = input[++i]
+        if (chr2 === undefined || chr2 === '\n' || chr2 === '\r') { break }
+      }
     } else if (isHexChar(chr)) {
       const chr2 = input[++i]
       if (!isHexChar(chr2)) {

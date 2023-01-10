@@ -11,6 +11,15 @@ describe('testing parsing simple binmark markup', () => {
 
   test('parsing two numbers in hex separated with a colon', () => {
     expect(binmark.parse('10:02')).toEqual([0x10, 0x02])
+
+  describe('comments', () => {
+    test('a line just containing a comment', () => {
+      expect(binmark.parse('# Hello World')).toEqual([])
+    })
+
+    test('parsing one number followed by a comment', () => {
+      expect(binmark.parse('10 # 02')).toEqual([0x10])
+    })
   })
 })
 
