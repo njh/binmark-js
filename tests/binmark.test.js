@@ -44,6 +44,10 @@ describe('testing parsing to an array of integers', () => {
     test('parsing one number followed by a comment', () => {
       expect(binmark.parse('10 # 02')).toEqual([0x10])
     })
+
+    test('a line containing a comment followed by some hex', () => {
+      expect(binmark.parse('# Hello World\nCAFE')).toEqual([0xCA, 0xFE])
+    })
   })
 
   describe('decimal integers', () => {
