@@ -58,6 +58,23 @@ function parse (input) {
       output.push(
         (parseInt(chr, 16) << 4) + parseInt(chr2, 16)
       )
+    } else if (chr === '"') {
+      while (true) {
+        const chr2 = input[++i]
+        if (chr2 === undefined || chr2 === '"') {
+          break
+        } else if (chr2 === '\\') {
+          const chr3 = input[++i]
+          const escaped = escapeToHex(chr3)
+          if (escaped === undefined) {
+            throw new Error('invalid escape sequence: ', chr3)
+          } else {
+            output.push(escaped)
+          }
+        } else {
+          output.push(chr2.charCodeAt(0))
+        }
+      }
     } else if (chr === '\\') {
       const chr2 = input[++i]
       if (chr2 === undefined) {

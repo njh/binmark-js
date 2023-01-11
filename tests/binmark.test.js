@@ -22,6 +22,23 @@ describe('testing parsing simple binmark markup', () => {
     })
   })
 
+  describe('strings', () => {
+    test('parsing a simple string', () => {
+      expect(binmark.parse('"This is a String"')).toEqual([
+        0x54, 0x68, 0x69, 0x73, 0x20, 0x69, 0x73, 0x20,
+        0x61, 0x20, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67
+      ])
+    })
+
+    test('parsing a string with quotes in it', () => {
+      expect(binmark.parse('"String with \\"quotes\\".\\r\\n"')).toEqual([
+        0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x20, 0x77,
+        0x69, 0x74, 0x68, 0x20, 0x22, 0x71, 0x75, 0x6f,
+        0x74, 0x65, 0x73, 0x22, 0x2e, 0x0d, 0x0a
+      ])
+    })
+  })
+
   describe('escapes', () => {
     test('parsing an null byte escape sequence', () => {
       expect(binmark.parse('00 \\0')).toEqual([0x00, 0x00])
