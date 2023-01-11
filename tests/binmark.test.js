@@ -22,6 +22,26 @@ describe('testing parsing simple binmark markup', () => {
     })
   })
 
+  describe('decimal integers', () => {
+    test('parsing positive decimal integers', () => {
+      expect(binmark.parse('.0 .127 .128 .255')).toEqual([
+        0, 127, 128, 255
+      ])
+    })
+
+    test('parsing negative numbers (two\'s complement)', () => {
+      expect(binmark.parse('.-1 .-2 .-127 .-128')).toEqual([
+        0xff, 0xfe, 0x81, 0x80
+      ])
+    })
+
+    test('parsing an IPv4 address', () => {
+      expect(binmark.parse('.192.168.1.1')).toEqual([
+        192, 168, 1, 1
+      ])
+    })
+  })
+
   describe('strings', () => {
     test('parsing a simple string', () => {
       expect(binmark.parse('"This is a String"')).toEqual([

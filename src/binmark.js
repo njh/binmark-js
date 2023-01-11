@@ -27,6 +27,11 @@ function isSpace (c) {
         c === '\v'
 }
 
+function isDecimalChar (c) {
+  const code = c.charCodeAt(0)
+  return (code >= 0x30 && code <= 0x39)
+}
+
 function isHexChar (c) {
   const code = c.charCodeAt(0)
   return (code >= 0x41 && code <= 0x46) || // A-F
@@ -58,6 +63,26 @@ function parse (input) {
       output.push(
         (parseInt(chr, 16) << 4) + parseInt(chr2, 16)
       )
+    } else if (chr === '.') {
+      // 8-bit Integer
+      let digits = ''
+
+      while (digits.length < 4) {
+        const chr2 = input[++i]
+        // FIXME: handle EOF better?
+        if (chr2 && (isDecimalChar(chr2) || chr2 === '-')) {
+          digits += chr2
+        } else {
+          i--
+          break
+        }
+      }
+
+      if (digits.length < 1 || digits.length > 4) {
+        throw new Error('invalid integer: ' + digits)
+      } else {
+        output.push(parseInt(digits) & 0xff)
+      }
     } else if (chr === '"') {
       while (true) {
         const chr2 = input[++i]
