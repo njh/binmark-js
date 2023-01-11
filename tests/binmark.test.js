@@ -1,16 +1,40 @@
 const binmark = require('../src/binmark')
 
-describe('testing parsing simple binmark markup', () => {
-  test('parsing two numbers in hex separated with a space', () => {
-    expect(binmark.parse('10 02')).toEqual([0x10, 0x02])
+describe('testing parsing to an array of integers', () => {
+  test('parsing a stream of hex characters', () => {
+    expect(binmark.parse('0123456789abcdef0123456789ABCDEF')).toEqual([
+      0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef,
+      0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef
+    ])
   })
 
-  test('parsing two numbers in hex separated with a tab', () => {
-    expect(binmark.parse('10\t02')).toEqual([0x10, 0x02])
-  })
+  describe('ignored characters', () => {
+    test('parsing two hex numbers padded with spaces', () => {
+      expect(binmark.parse('    10    02    ')).toEqual([0x10, 0x02])
+    })
 
-  test('parsing two numbers in hex separated with a colon', () => {
-    expect(binmark.parse('10:02')).toEqual([0x10, 0x02])
+    test('parsing two hex numbers in hex separated with a tab', () => {
+      expect(binmark.parse('10\t02')).toEqual([0x10, 0x02])
+    })
+
+    test('parsing newline characters and line feeds', () => {
+      expect(binmark.parse('01\n\n02\r\r03\r\n')).toEqual([
+        0x01, 0x02, 0x03
+      ])
+    })
+
+    test('parsing hex numbers separated with hyphens', () => {
+      expect(binmark.parse('01-23-45-67-89-ab-cd-ef')).toEqual([
+        0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef
+      ])
+    })
+
+    test('parsing hex numbers separated with colons', () => {
+      expect(binmark.parse('01:23:45:67:89:ab:cd:ef')).toEqual([
+        0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef
+      ])
+    })
+  })
 
   describe('comments', () => {
     test('a line just containing a comment', () => {
