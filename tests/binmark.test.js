@@ -103,3 +103,9 @@ describe('testing parsing binmark to a hex string', () => {
     expect(binmark.parseToHex('10 02')).toEqual('10 02')
   })
 })
+
+describe('testing parsing binmark to comma separated hex', () => {
+  test('parsing two numbers in hex separated with a space', () => {
+    expect(binmark.parseToCommaHex('01 02 FF')).toEqual('0x01, 0x02, 0xff')
+  })
+})

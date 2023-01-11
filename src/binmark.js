@@ -130,7 +130,14 @@ function parseToHex (input, separator) {
   return array.map(i => i.toString(16).padStart(2, '0')).join(separator)
 }
 
+function parseToCommaHex (input) {
+  const array = parse(input)
+
+  return array.map(i => '0x'+i.toString(16).padStart(2, '0')).join(', ')
+}
+
 module.exports = {
   parse,
-  parseToHex
+  parseToHex,
+  parseToCommaHex
 }
