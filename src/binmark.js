@@ -122,9 +122,9 @@ function parse (input) {
 
 function parseToHex (input, separator) {
   const array = parse(input)
-  
+
   if (separator === undefined) {
-      separator = ' '
+    separator = ' '
   }
 
   return array.map(i => i.toString(16).padStart(2, '0')).join(separator)
