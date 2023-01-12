@@ -28,6 +28,12 @@ describe('testing parsing to an array of integers', () => {
     ])
   })
 
+  test('parsing hex value with an invalid second character', () => {
+    expect(() => {
+      binmark.parse('01 02 0Z')
+    }).toThrow('got non-hex digit after hex digit: Z')
+  })
+
   describe('ignored characters', () => {
     test('parsing two hex numbers padded with spaces', () => {
       expect(binmark.parse('    10    02    ')).toEqual([0x10, 0x02])
@@ -123,6 +129,10 @@ describe('testing parsing to an array of integers', () => {
         0x74, 0x65, 0x73, 0x22, 0x2e, 0x0d, 0x0a
       ])
     })
+
+    test('parsing a string with no contents', () => {
+      expect(binmark.parse('01"')).toEqual([0x01])
+    })
   })
 
   describe('escapes', () => {
@@ -134,7 +144,31 @@ describe('testing parsing to an array of integers', () => {
       expect(binmark.parse(' \\r \\n')).toEqual([0x0d, 0x0a])
     })
 
+    test('parsing an escape that we don\'t recognise', () => {
+      expect(() => {
+        binmark.parse('01 \\D')
+      }).toThrow('invalid escape sequence: D')
+    })
+
+    test('parsing an escape with nothing after it', () => {
+      expect(binmark.parse('01 \\')).toEqual([0x01])
+    })
+
     testFixture('escapes', 'parsing all valid escape sequences')
+  })
+
+  describe('invalid characters', () => {
+    test('parsing a string with a G in it', () => {
+      expect(() => {
+        binmark.parse('CC DD EE FF GG')
+      }).toThrow('unrecognised character in input: G')
+    })
+
+    test('parsing a string with a S in it', () => {
+      expect(() => {
+        binmark.parse('01 02 S 03')
+      }).toThrow('unrecognised character in input: S')
+    })
   })
 })
 
