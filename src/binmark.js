@@ -39,81 +39,104 @@ function isHexChar (c) {
          (code >= 0x30 && code <= 0x39) // 0-9
 }
 
-function parse (input) {
+function parseComment (input, state) {
+  while (true) {
+    const chr = input[state.pos++]
+    if (chr === undefined || chr === '\n' || chr === '\r') { return }
+  }
+}
+
+function parseHexValue (chr, input, state) {
+  const chr2 = input[state.pos++]
+  if (!isHexChar(chr2)) {
+    throw new Error('got non-hex digit after hex digit: ' + chr2)
+  }
+
+  return (parseInt(chr, 16) << 4) + parseInt(chr2, 16)
+}
+
+function parseDecInteger (input, state) {
+  let digits = ''
+
+  while (digits.length < 4) {
+    const chr = input[state.pos++]
+    // FIXME: handle EOF better?
+    if (chr && (isDecimalChar(chr) || chr === '-')) {
+      digits += chr
+    } else {
+      state.pos--
+      break
+    }
+  }
+
+  if (digits.length < 1 || digits.length > 4) {
+    throw new Error('invalid integer: ' + digits)
+  } else {
+    return parseInt(digits) & 0xff
+  }
+}
+
+function parseEscape (input, state) {
+  const chr = input[state.pos++]
+  if (chr === undefined) {
+    // FIXME
+
+  } else {
+    const escaped = escapeToHex(chr)
+    if (escaped === undefined) {
+      throw new Error('invalid escape sequence: ' + chr)
+    } else {
+      return escaped
+    }
+  }
+}
+
+function parseString (input, state) {
   const output = []
 
-  for (let i = 0; i < input.length; i++) {
-    const chr = input[i]
+  while (true) {
+    const chr = input[state.pos++]
+    if (chr === undefined || chr === '"') {
+      break
+    } else if (chr === '\\') {
+      output.push(parseEscape(input, state))
+    } else {
+      output.push(chr.charCodeAt(0))
+    }
+  }
+
+  return output
+}
+
+function parse (input) {
+  const output = []
+  const state = {
+    pos: 0,
+    line: 1
+  }
+
+  while (state.pos < input.length) {
+    const chr = input[state.pos++]
 
     if (isSpace(chr) || chr === ':' || chr === '-') {
-      /* Ignore */
-      continue
+      // Ignore
     } else if (chr === '#') {
-      /* Ignore the rest of the line */
-      while (true) {
-        const chr2 = input[++i]
-        if (chr2 === undefined || chr2 === '\n' || chr2 === '\r') { break }
-      }
+      // Ignore the rest of the line
+      parseComment(input, state)
     } else if (isHexChar(chr)) {
-      const chr2 = input[++i]
-      if (!isHexChar(chr2)) {
-        throw new Error('got non-hex digit after hex digit: ', chr2)
-      }
-
-      output.push(
-        (parseInt(chr, 16) << 4) + parseInt(chr2, 16)
-      )
+      // Hex
+      output.push(parseHexValue(chr, input, state))
     } else if (chr === '.') {
-      // 8-bit Integer
-      let digits = ''
-
-      while (digits.length < 4) {
-        const chr2 = input[++i]
-        // FIXME: handle EOF better?
-        if (chr2 && (isDecimalChar(chr2) || chr2 === '-')) {
-          digits += chr2
-        } else {
-          i--
-          break
-        }
-      }
-
-      if (digits.length < 1 || digits.length > 4) {
-        throw new Error('invalid integer: ' + digits)
-      } else {
-        output.push(parseInt(digits) & 0xff)
-      }
+      // 8-bit Decimal Integer
+      output.push(parseDecInteger(input, state))
     } else if (chr === '"') {
-      while (true) {
-        const chr2 = input[++i]
-        if (chr2 === undefined || chr2 === '"') {
-          break
-        } else if (chr2 === '\\') {
-          const chr3 = input[++i]
-          const escaped = escapeToHex(chr3)
-          if (escaped === undefined) {
-            throw new Error('invalid escape sequence: ', chr3)
-          } else {
-            output.push(escaped)
-          }
-        } else {
-          output.push(chr2.charCodeAt(0))
-        }
-      }
+      // String
+      Array.prototype.push.apply(output, parseString(input, state))
     } else if (chr === '\\') {
-      const chr2 = input[++i]
-      if (chr2 === undefined) {
-        break
-      } else {
-        const escaped = escapeToHex(chr2)
-        if (escaped === undefined) {
-          throw new Error('invalid escape sequence: ', chr2)
-        } else {
-          output.push(escaped)
-        }
-      }
+      // Escape
+      output.push(parseEscape(input, state))
     } else {
-      throw new Error('unrecognised character in input: ', chr)
+      throw new Error('unrecognised character in input: ' + chr)
     }
   }
 
@@ -133,7 +156,7 @@ function parseToHex (input, separator) {
 function parseToCommaHex (input) {
   const array = parse(input)
 
-  return array.map(i => '0x'+i.toString(16).padStart(2, '0')).join(', ')
+  return array.map(i => '0x' + i.toString(16).padStart(2, '0')).join(', ')
 }
 
 module.exports = {
