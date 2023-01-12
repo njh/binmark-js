@@ -50,7 +50,7 @@ describe('testing parsing to an array of integers', () => {
     })
   })
 
-  describe('decimal integers', () => {
+  describe('8-bit decimal integers', () => {
     test('parsing positive decimal integers', () => {
       expect(binmark.parse('.0 .127 .128 .255')).toEqual([
         0, 127, 128, 255
@@ -58,8 +58,8 @@ describe('testing parsing to an array of integers', () => {
     })
 
     test('parsing negative numbers (two\'s complement)', () => {
-      expect(binmark.parse('.-1 .-2 .-127 .-128')).toEqual([
-        0xff, 0xfe, 0x81, 0x80
+      expect(binmark.parse('.-1 .-2 .-127')).toEqual([
+        0xff, 0xfe, 0x81
       ])
     })
 
@@ -67,6 +67,24 @@ describe('testing parsing to an array of integers', () => {
       expect(binmark.parse('.192.168.1.1')).toEqual([
         192, 168, 1, 1
       ])
+    })
+
+    test('parsing a number with no valid characters', () => {
+      expect(() => {
+        binmark.parse('.Z')
+      }).toThrow('no valid characters after start of 8-bit integer')
+    })
+
+    test('parsing a number that is greater than 255', () => {
+      expect(() => {
+        binmark.parse('.256')
+      }).toThrow('8-bit integer is greater than 255: 256')
+    })
+
+    test('parsing a number that is less than -127', () => {
+      expect(() => {
+        binmark.parse('.-128')
+      }).toThrow('8-bit integer is less than -127: -128')
     })
   })
 

@@ -61,6 +61,7 @@ function parseDecInteger (input, state) {
   while (digits.length < 4) {
     const chr = input[state.pos++]
     // FIXME: handle EOF better?
+    // FIXME: handle - better (not mid-number)
     if (chr && (isDecimalChar(chr) || chr === '-')) {
       digits += chr
     } else {
@@ -69,10 +70,17 @@ function parseDecInteger (input, state) {
     }
   }
 
-  if (digits.length < 1 || digits.length > 4) {
-    throw new Error('invalid integer: ' + digits)
+  if (digits.length < 1) {
+    throw new Error('no valid characters after start of 8-bit integer')
   } else {
-    return parseInt(digits) & 0xff
+    const int = parseInt(digits)
+    if (int < -127) {
+      throw new Error('8-bit integer is less than -127: ' + int)
+    } else if (int > 255) {
+      throw new Error('8-bit integer is greater than 255: ' + int)
+    } else {
+      return int & 0xff
+    }
   }
 }
 
