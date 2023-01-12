@@ -1,4 +1,24 @@
 const binmark = require('../src/binmark')
+const path = require('path')
+const fs = require('fs')
+
+function readFixture (filename) {
+  // FIXME: could we do this asynchronously?
+  return fs.readFileSync(
+    path.resolve(__dirname, './fixtures/' + filename),
+    'ascii'
+  )
+}
+
+function testFixture (name, descripton) {
+  const bm = readFixture(`${name}.bm`)
+  const expected = readFixture(`${name}.expect`)
+
+  test(descripton, () => {
+    const result = binmark.parseToHex(bm)
+    expect(result).toEqual(expected)
+  })
+}
 
 describe('testing parsing to an array of integers', () => {
   test('parsing a stream of hex characters', () => {
@@ -113,6 +133,8 @@ describe('testing parsing to an array of integers', () => {
     test('parsing a CR LF escape sequence', () => {
       expect(binmark.parse(' \\r \\n')).toEqual([0x0d, 0x0a])
     })
+
+    testFixture('escapes', 'parsing all valid escape sequences')
   })
 })
 
@@ -126,4 +148,12 @@ describe('testing parsing binmark to comma separated hex', () => {
   test('parsing two numbers in hex separated with a space', () => {
     expect(binmark.parseToCommaHex('01 02 FF')).toEqual('0x01, 0x02, 0xff')
   })
+})
+
+describe('more complex test cases from fixture files', () => {
+  testFixture('ipv4_dns_packet', 'IPv4 DNS packet')
+  testFixture('ipv6_udp_packet', 'IPv6 UDP packet')
+  testFixture('mqtt_connect', 'MQTT Connect packet')
+  testFixture('mqtt_publish', 'MQTT Publish packet')
+  testFixture('pgm_feep', 'Binary PGM Image file')
 })
