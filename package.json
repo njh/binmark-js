@@ -12,11 +12,15 @@
   "bugs": {
     "url": "https://github.com/njh/binmark-js/issues"
   },
+  "main": "src/binmark.js",
   "scripts": {
     "test": "jest",
     "coverage": "jest --coverage",
     "format": "standard --fix"
   },
+  "files": [
+    "src/"
+  ],
   "directories": {
     "test": "tests"
   },
