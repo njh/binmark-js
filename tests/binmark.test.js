@@ -173,8 +173,12 @@ describe('testing parsing to an array of integers', () => {
 })
 
 describe('testing parsing binmark to a hex string', () => {
-  test('parsing two numbers in hex separated with a space', () => {
+  test('parsing two numbers in hex separated with default', () => {
     expect(binmark.parseToHex('10 02')).toEqual('10 02')
+  })
+
+  test('parsing three numbers in hex separated with a colon', () => {
+    expect(binmark.parseToHex('01 02 03', ':')).toEqual('01:02:03')
   })
 })
 
