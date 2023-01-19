@@ -32,3 +32,8 @@ inputElement.addEventListener('input', (event) => {
 })
 
 updateOutput()
+
+// Set focus on end of text
+const end = inputElement.value.length
+inputElement.setSelectionRange(end, end)
+inputElement.focus()
