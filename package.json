@@ -1,0 +1,24 @@
+{
+  "name": "binmark-demo",
+  "author": "Nicholas Humfrey",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "start": "parcel",
+    "build": "parcel build"
+  },
+  "dependencies": {
+    "binmark": "latest",
+    "purecss": "^3.0.0"
+  },
+  "devDependencies": {
+    "parcel": "latest",
+    "standard": "^17.0.0"
+  },
+  "targets": {
+    "default": {
+      "source": "./src/index.html",
+      "distDir": "./output"
+    }
+  }
+}

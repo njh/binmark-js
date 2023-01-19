@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>binmark.js Demo</title>
+  <link href='https://fonts.googleapis.com/css?family=IBM+Plex+Mono:400,400italic,700' rel='stylesheet' type='text/css' />
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,600' rel='stylesheet' type='text/css' />
+  <link rel="stylesheet" type="text/css" href="npm:purecss/build/pure-min.css" />
+  <link rel="stylesheet" type="text/css" href="npm:purecss/build/grids-responsive-min.css" />
+  <link rel="stylesheet" type="text/css" href="./styles.css" />
+</head>
+
+<body>
+  <nav class="header">
+    <h1>binmark</h1>
+  </nav>
+
+  <div class="pure-g">
+    <div class="pure-u-1 pure-u-md-1-2">
+      <div class="panel">
+        <div class="title">
+          <h2>Input</h2>
+        </div>
+<textarea id="input" class="code">
+30             # Packet Type 3: Publish
+.17            # Remaining length (17 bytes)
+0004           # Topic name length
+"test"         # Topic name
+"hello world"  # Payload
+</textarea>
+      </div>
+
+      <div id="error">
+      </div>
+    </div>
+
+    <div class="pure-u-1 pure-u-md-1-2">
+      <div class="panel">
+        <div class="title">
+          <h2>Result</h2>
+        </div>
+        <div id="output" class="code">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./app.js" type="module"></script>
+</body>
+
+</html>
