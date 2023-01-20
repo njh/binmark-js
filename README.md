@@ -61,3 +61,22 @@ This was my thought process while designing _binmark_:
 * ASCII input - try and avoid potential weird character-set problems
 * Not so complex that there wouldn't be other implementations in other languages
 
+
+Other Languages
+---------------
+
+* C/C++: https://github.com/njh/binmark
+
+
+License
+-------
+
+`binmark` is licensed under the terms of the MIT license.
+See the file [LICENSE](/LICENSE.md) for details.
+
+
+Contact
+-------
+
+* Author:    Nicholas J Humfrey
+* Twitter:   [@njh](http://twitter.com/njh)
