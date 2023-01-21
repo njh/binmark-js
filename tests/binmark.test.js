@@ -34,6 +34,12 @@ describe('testing parsing to an array of integers', () => {
     }).toThrow('got non-hex digit after hex digit: Z')
   })
 
+  test('parsing hex value with no second character', () => {
+    expect(() => {
+      binmark.parse('ff f')
+    }).toThrow('missing second digit after hex character')
+  })
+
   describe('ignored characters', () => {
     test('parsing two hex numbers padded with spaces', () => {
       expect(binmark.parse('    10    02    ')).toEqual([0x10, 0x02])

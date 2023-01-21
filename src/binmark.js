@@ -48,7 +48,9 @@ function parseComment (input, state) {
 
 function parseHexValue (chr, input, state) {
   const chr2 = input[state.pos++]
-  if (!isHexChar(chr2)) {
+  if (chr2 === undefined) {
+    throw new Error('missing second digit after hex character')
+  } else if (!isHexChar(chr2)) {
     throw new Error('got non-hex digit after hex digit: ' + chr2)
   }
 
