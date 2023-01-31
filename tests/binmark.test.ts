@@ -1,16 +1,16 @@
-const binmark = require('../src/binmark')
-const path = require('path')
-const fs = require('fs')
+import * as binmark from '../src/binmark'
+import { resolve } from 'path'
+import { readFileSync } from 'fs'
 
-function readFixture (filename) {
+function readFixture (filename: string): string {
   // FIXME: could we do this asynchronously?
-  return fs.readFileSync(
-    path.resolve(__dirname, './fixtures/' + filename),
+  return readFileSync(
+    resolve(__dirname, './fixtures/' + filename),
     'ascii'
   )
 }
 
-function testFixture (name, descripton) {
+function testFixture (name: string, descripton: string): void {
   const bm = readFixture(`${name}.bm`)
   const expected = readFixture(`${name}.expect`)
 
@@ -157,7 +157,9 @@ describe('testing parsing to an array of integers', () => {
     })
 
     test('parsing an escape with nothing after it', () => {
-      expect(binmark.parse('01 \\')).toEqual([0x01])
+      expect(() => {
+        binmark.parse('01 \\')
+      }).toThrow('missing character after escape')
     })
 
     testFixture('escapes', 'parsing all valid escape sequences')

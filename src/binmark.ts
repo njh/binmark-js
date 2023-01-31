@@ -1,5 +1,16 @@
+class ParseState {
+  pos: number
+  line: number
+  col: number
 
-function escapeToHex (chr) {
+  constructor () {
+    this.pos = 0
+    this.line = 1
+    this.col = 1
+  }
+}
+
+function escapeToHex (chr: string): number | undefined {
   switch (chr) {
     case '0': return 0x00
     case 'a': return 0x07
@@ -18,7 +29,7 @@ function escapeToHex (chr) {
   }
 }
 
-function isSpace (c) {
+function isSpace (c: string): boolean {
   return c === ' ' ||
         c === '\n' ||
         c === '\t' ||
@@ -27,26 +38,26 @@ function isSpace (c) {
         c === '\v'
 }
 
-function isDecimalChar (c) {
+function isDecimalChar (c: string): boolean {
   const code = c.charCodeAt(0)
   return (code >= 0x30 && code <= 0x39)
 }
 
-function isHexChar (c) {
+function isHexChar (c: string): boolean {
   const code = c.charCodeAt(0)
   return (code >= 0x41 && code <= 0x46) || // A-F
          (code >= 0x61 && code <= 0x66) || // a-F
          (code >= 0x30 && code <= 0x39) // 0-9
 }
 
-function parseComment (input, state) {
+function parseComment (input: string, state: ParseState): void {
   while (true) {
     const chr = input[state.pos++]
     if (chr === undefined || chr === '\n' || chr === '\r') { return }
   }
 }
 
-function parseHexValue (chr, input, state) {
+function parseHexValue (chr: string, input: string, state: ParseState): number {
   const chr2 = input[state.pos++]
   if (chr2 === undefined) {
     throw new Error('missing second digit after hex character')
@@ -57,14 +68,14 @@ function parseHexValue (chr, input, state) {
   return (parseInt(chr, 16) << 4) + parseInt(chr2, 16)
 }
 
-function parseDecInteger (input, state) {
+function parseDecInteger (input: string, state: ParseState): number {
   let digits = ''
 
   while (digits.length < 4) {
     const chr = input[state.pos++]
     // FIXME: handle EOF better?
     // FIXME: handle - better (not mid-number)
-    if (chr && (isDecimalChar(chr) || chr === '-')) {
+    if (chr !== undefined && (isDecimalChar(chr) || chr === '-')) {
       digits += chr
     } else {
       state.pos--
@@ -77,20 +88,19 @@ function parseDecInteger (input, state) {
   } else {
     const int = parseInt(digits)
     if (int < -127) {
-      throw new Error('8-bit integer is less than -127: ' + int)
+      throw new Error(`8-bit integer is less than -127: ${int}`)
     } else if (int > 255) {
-      throw new Error('8-bit integer is greater than 255: ' + int)
+      throw new Error(`8-bit integer is greater than 255: ${int}`)
     } else {
       return int & 0xff
     }
   }
 }
 
-function parseEscape (input, state) {
+function parseEscape (input: string, state: ParseState): number {
   const chr = input[state.pos++]
   if (chr === undefined) {
-    // FIXME
-
+    throw new Error('missing character after escape')
   } else {
     const escaped = escapeToHex(chr)
     if (escaped === undefined) {
@@ -101,8 +111,8 @@ function parseEscape (input, state) {
   }
 }
 
-function parseString (input, state) {
-  const output = []
+function parseString (input: string, state: ParseState): number[] {
+  const output: number[] = []
 
   while (true) {
     const chr = input[state.pos++]
@@ -118,12 +128,9 @@ function parseString (input, state) {
   return output
 }
 
-function parse (input) {
-  const output = []
-  const state = {
-    pos: 0,
-    line: 1
-  }
+export function parse (input: string): number[] {
+  const output: number[] = []
+  const state = new ParseState()
 
   while (state.pos < input.length) {
     const chr = input[state.pos++]
@@ -153,7 +160,7 @@ function parse (input) {
   return output
 }
 
-function parseToHex (input, separator) {
+export function parseToHex (input: string, separator?: string): string {
   const array = parse(input)
 
   if (separator === undefined) {
@@ -163,14 +170,10 @@ function parseToHex (input, separator) {
   return array.map(i => i.toString(16).padStart(2, '0')).join(separator)
 }
 
-function parseToCommaHex (input) {
+export function parseToCommaHex (input: string): string {
   const array = parse(input)
 
   return array.map(i => '0x' + i.toString(16).padStart(2, '0')).join(', ')
 }
 
-module.exports = {
-  parse,
-  parseToHex,
-  parseToCommaHex
-}
+export default parse
