@@ -26,6 +26,9 @@
   "directories": {
     "test": "tests"
   },
+  "dependencies": {
+    "buffer": "^6.0.3"
+  },
   "devDependencies": {
     "@types/jest": "^27.2.5",
     "@types/node": "^18.11.18",

@@ -1,3 +1,5 @@
+import { Buffer } from 'buffer'
+
 class ParseState {
   pos: number
   line: number
@@ -174,6 +176,11 @@ export function parseToCommaHex (input: string): string {
   const array = parse(input)
 
   return array.map(i => '0x' + i.toString(16).padStart(2, '0')).join(', ')
+}
+
+export function parseToBuffer (input: string): Buffer {
+  const array = parse(input)
+  return Buffer.from(array)
 }
 
 export default parse

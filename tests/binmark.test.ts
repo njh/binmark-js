@@ -191,8 +191,15 @@ describe('testing parsing binmark to a hex string', () => {
 })
 
 describe('testing parsing binmark to comma separated hex', () => {
-  test('parsing two numbers in hex separated with a space', () => {
+  test('parsing three numbers in hex separated with a space', () => {
     expect(binmark.parseToCommaHex('01 02 FF')).toEqual('0x01, 0x02, 0xff')
+  })
+})
+
+describe('testing parsing binmark to a Buffer object', () => {
+  test('parsing three numbers in hex separated with a space', () => {
+    const bytes = Buffer.from([0x01, 0x02, 0xFF])
+    expect(binmark.parseToBuffer('01 02 FF')).toEqual(bytes)
   })
 })
 
