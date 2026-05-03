@@ -1,8 +1,11 @@
 binmark.js
 ==========
 
-_binmark_ is a markup language and JavaScript library for describing binary files,
-that is easier to read and write than a continuous stream of hexadecimal characters.
+[![CI](https://github.com/njh/binmark-js/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/njh/binmark-js/actions/workflows/ci.yml)
+
+_binmark_ is a markup language and TypeScript / JavaScript library for describing
+binary files, that is easier to read and write than a continuous stream of
+hexadecimal characters.
 
 
 The following characters are supported:
@@ -28,6 +31,34 @@ Given the following sample input file, which is reasonably easy read:
     0004           # Topic name length
     "test"         # Topic name
     "hello world"  # Payload
+
+The resulting hexadecimal would be:
+
+    30 11 00 04 74 65 73 74
+    68 65 6c 6c 6f 20 77 6f
+    72 6c 64
+
+
+TypeScript / JavaScript API
+---------------------------
+
+```
+function parse(input: string): number[]
+```
+
+
+```
+function parseToHex(input: string, separator?: string): string
+```
+
+```
+function parseToCommaHex(input: string): string
+```
+
+```
+function parseToBuffer(input: string): Buffer
+```
+
 
 
 But why?
