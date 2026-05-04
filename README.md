@@ -39,26 +39,22 @@ The resulting hexadecimal would be:
     72 6c 64
 
 
-TypeScript / JavaScript API
----------------------------
+API
+---
 
-```
-function parse(input: string): number[]
-```
+`parse(input: string): number[]`  
+Parses binmark text and returns the output as an array of byte values (`0-255`).
 
+`parseToHex(input: string, separator?: string): string`  
+Parses binmark text and returns lowercase hexadecimal bytes as a string joined by `separator` (default: a space).
 
-```
-function parseToHex(input: string, separator?: string): string
-```
+`parseToCommaHex(input: string): string`  
+Parses binmark text and returns a comma-separated hex list as a string like `0x30, 0x11, 0x00`.
 
-```
-function parseToCommaHex(input: string): string
-```
+`parseToBuffer(input: string): Buffer`  
+Parses binmark text and returns a Node.js `Buffer`.
 
-```
-function parseToBuffer(input: string): Buffer
-```
-
+Default export: `parse`.
 
 
 But why?
