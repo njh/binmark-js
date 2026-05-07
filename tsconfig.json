@@ -4,7 +4,9 @@
     "target": "es2015",
     "declaration": true,
     "outDir": "./dist",
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "types": ["node", "jest"]
   },
   "include": ["./src/**/*", "./tests/**/*"],
+  "exclude": ["./dist"]
 }
