@@ -143,11 +143,31 @@ describe('testing parsing to an array of integers', () => {
 
   describe('escapes', () => {
     test('parsing an null byte escape sequence', () => {
-      expect(binmark.parse('00 \\0')).toEqual([0x00, 0x00])
+      expect(binmark.parse('00 \\0 \\00 \\000')).toEqual([
+        0x00, 0x00, 0x00, 0x00
+      ])
+    })
+
+    test('parsing octal escape sequences', () => {
+      expect(binmark.parse('\\12 \\020 \\040 \\377')).toEqual([
+        0x0a, 0x10, 0x20, 0xff
+      ])
     })
 
     test('parsing a CR LF escape sequence', () => {
       expect(binmark.parse(' \\r \\n')).toEqual([0x0d, 0x0a])
+    })
+
+    test('parsing octal escapes inside a string', () => {
+      expect(binmark.parse('"A\\043B\\012"')).toEqual([
+        0x41, 0x23, 0x42, 0x0a
+      ])
+    })
+
+    test('parsing an octal escape sequence greater than 255', () => {
+      expect(() => {
+        binmark.parse('\\400')
+      }).toThrow('octal escape sequence is greater than 255: \\400')
     })
 
     test('parsing an escape that we don\'t recognise', () => {

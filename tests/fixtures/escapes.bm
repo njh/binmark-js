@@ -13,3 +13,11 @@
 \'  # 0x27 Single quotation mark
 \"  # 0x22 Double quotation mark
 \?  # 0x3F Question mark
+
+# Octal Escape Sequences
+\000  # 0x00 Null
+\020  # 0x10 DLE
+\040  # 0x20 Space
+\100  # 0x40 @
+\101  # 0x41 A
+\377  # 0xFF 255

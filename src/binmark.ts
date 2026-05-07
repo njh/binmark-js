@@ -14,7 +14,6 @@ class ParseState {
 
 function escapeToHex (chr: string): number | undefined {
   switch (chr) {
-    case '0': return 0x00
     case 'a': return 0x07
     case 'b': return 0x08
     case 'f': return 0x0C
@@ -43,6 +42,11 @@ function isSpace (c: string): boolean {
 function isDecimalChar (c: string): boolean {
   const code = c.charCodeAt(0)
   return (code >= 0x30 && code <= 0x39)
+}
+
+function isOctalChar (c: string): boolean {
+  const code = c.charCodeAt(0)
+  return (code >= 0x30 && code <= 0x37)
 }
 
 function isHexChar (c: string): boolean {
@@ -99,10 +103,33 @@ function parseDecInteger (input: string, state: ParseState): number {
   }
 }
 
+function parseOctalEscape (chr: string, input: string, state: ParseState): number {
+  let digits = chr
+
+  while (digits.length < 3) {
+    const next = input[state.pos]
+    if (next === undefined || !isOctalChar(next)) {
+      break
+    }
+
+    digits += next
+    state.pos++
+  }
+
+  const int = parseInt(digits, 8)
+  if (int > 0xff) {
+    throw new Error(`octal escape sequence is greater than 255: \\${digits}`)
+  }
+
+  return int
+}
+
 function parseEscape (input: string, state: ParseState): number {
   const chr = input[state.pos++]
   if (chr === undefined) {
     throw new Error('missing character after escape')
+  } else if (isOctalChar(chr)) {
+    return parseOctalEscape(chr, input, state)
   } else {
     const escaped = escapeToHex(chr)
     if (escaped === undefined) {

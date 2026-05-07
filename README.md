@@ -10,15 +10,15 @@ hexadecimal characters.
 
 The following characters are supported:
 
-| Character     | Description                                              |
-|---------------|----------------------------------------------------------|
-| 0-9 and a-f   | A byte as hexadecimal. Must be two characters long.      |
-| Whitespace    | Ignored                                                  |
-| Colon or Dash | Ignored - useful for improving readability               |
-| .nnn          | A 8-bit decimal integer                                  |
-| ""            | A string of ASCII characters                             |
-| #             | The start of a comment - the rest of the line is ignored |
-| \             | Escape sequences (\0 \a \b \f \n \r \t \v)               |
+| Character     | Description                                                    |
+|---------------|----------------------------------------------------------------|
+| 0-9 and a-f   | A byte as hexadecimal. Must be two characters long.            |
+| Whitespace    | Ignored                                                        |
+| Colon or Dash | Ignored - useful for improving readability                     |
+| .nnn          | A 8-bit decimal integer                                        |
+| ""            | A string of ASCII characters                                   |
+| #             | The start of a comment - the rest of the line is ignored       |
+| \             | Escape sequences (\0 \a \b \f \n \r \t \v and octal like \043) |
 
 
 Example
